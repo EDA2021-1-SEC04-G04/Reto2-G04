@@ -218,13 +218,14 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         tipo = int(input("Ingrese 1 si desea un arreglo o cualquier otro caracter para una lista encadenada: "))
-        t1 = time.time_ns()
+        #cambio medida tiempo y memoria
         catalog = controller.initCatalog(tipo)
-        loadData(catalog,tipo)
-        t2 = time.time_ns()
-        print('El tiempo de carga fue de ' , ((t2-t1)/1000000))
+        answer = loadData(catalog,tipo)
+
+        #print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+        #      "Memoria [kB]: ", f"{answer[1]:.3f}")
         print('Videos cargados: ' + str(lt.size(catalog['Videos'])))
-        print('Categorias cargadas: ' + str(lt.size(catalog['Categories'])))
+        print('Categorias cargadas: ' + str(map.size(catalog['Categories'])))
         print('Asociación de Categorías a Videos cargados: ' +
               str(lt.size(catalog['Videos'])))
         print("El primer video cargado fue: ")

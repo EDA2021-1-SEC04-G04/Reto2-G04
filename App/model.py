@@ -32,6 +32,9 @@ from DISClib.Algorithms.Sorting import selectionsort as stn
 from DISClib.Algorithms.Sorting import shellsort as shr
 from DISClib.Algorithms.Sorting import quicksort as qst
 from DISClib.Algorithms.Sorting import mergesort as mst
+from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
+
 assert cf
 
 """
@@ -53,7 +56,10 @@ def newCatalog(tipo: str):
                }
 
     catalog['Videos'] = lt.newList(tipo, cmpfunction = compareVideos)
-    catalog['Categories'] = lt.newList(tipo)
+    catalog['Categories'] = mp.newMap(10000,
+                                      maptype="CHAINING",
+                                      loadfactor=2.0
+                                      )
     return catalog
 
 # Funciones para agregar informacion al catalogo
@@ -62,7 +68,8 @@ def addCategory(catalog, category):
     """
     Adiciona una cateogría a la lista de categorías
     """
-    lt.addLast(catalog['Categories'],category)
+    
+    mp.put(catalog['Categories'], category['id'], category['name'])
 
 def addVideo(catalog, video,typ):
     # Se adiciona el video a la lista de videos y se le agrega su categoria correspondiente
@@ -75,15 +82,7 @@ def addVideoCategory(category_id, categories):
     """
     Cambia la categoria del libro con la correspondiente
     """
-    new_category = None
-    found = False
-    ticker = 0
-    while found == False and ticker <len(categories):
-        for pos in range(0,lt.size(categories)):
-            if lt.getElement(categories,pos)['id'] == category_id:
-                new_category = lt.getElement(categories,pos)['name']
-                found == True
-        ticker +=1
+    new_category = mp.get(categories,category_id)
     return new_category
 
 # Funciones para creacion de datos
@@ -174,6 +173,15 @@ def compareCountries(country1, country2):
 
 def cmpByLikes(Video1,Video2):
     return float(Video1['likes']) < float(Video2['likes'])
+
+def compareCategories(id, entrada):
+    categoryentry = me.getKey(entrada)
+    if (int(id) == int(categoryentry)):
+        return 0
+    elif (int(id) > int(categoryentry)):
+        return 1
+    else:
+        return 0
     
 
 # Funciones de ordenamiento
