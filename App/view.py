@@ -233,8 +233,9 @@ while True:
         print_first_element(catalog['Videos'])
         print('Las categorias cargadas fueron:')
         #print_categories(catalog['Categories'])     
-        print("MEMORIA : " + str(answer[1])+ " kbs")
-        print("TIEMPO : " + str(answer[0]) + " ms") 
+        #print("MEMORIA : " + str(answer[1])+ " kbs")
+        #print("TIEMPO : " + str(answer[0]) + " ms")
+        print(answer) 
         
     elif int(inputs[0]) == 2:
         num_countries = int(input("Escriba en numeros la cantidad de videos que desea consultar: "))

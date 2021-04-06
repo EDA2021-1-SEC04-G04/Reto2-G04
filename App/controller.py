@@ -60,6 +60,7 @@ def loadData(catalog,typ):
 
     tracemalloc.start()
     start_time = getTime()
+    print(start_time)
     start_memory = getMemory()
 
     list_type = def_type_list(typ)
@@ -72,7 +73,8 @@ def loadData(catalog,typ):
 
     delta_time = stop_time - start_time
     delta_memory = deltaMemory(start_memory, stop_memory)
-    return delta_time, delta_memory
+    tupla = (delta_time, delta_memory)
+    return tupla
     #sortVideos(catalog)
 
 
