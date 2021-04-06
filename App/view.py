@@ -26,6 +26,7 @@ import controller
 import time
 from DISClib.ADT import list as lt
 from DISClib.ADT import queue as qu
+from DISClib.ADT import map as mp
 assert cf
 
 default_limit = 1000
@@ -123,10 +124,10 @@ def print_categories(categorias):
     """
     Imrpime las categorias con su respectivo id
     """
-    size = lt.size(categorias)
+    size = mp.size(categorias)
     for i in range(0,size):
-        ide = lt.getElement(categorias,i)['id']
-        categoria = lt.getElement(categorias,i)['name']
+        ide = mp.getElement(categorias,i)['id']
+        categoria = mp.getElement(categorias,i)['name']
         print(ide + ': ' +categoria)
 
 def printVideosMostViews(videos,country,num_countries,category):
@@ -225,13 +226,15 @@ while True:
         #print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
         #      "Memoria [kB]: ", f"{answer[1]:.3f}")
         print('Videos cargados: ' + str(lt.size(catalog['Videos'])))
-        print('Categorias cargadas: ' + str(map.size(catalog['Categories'])))
+        print('Categorias cargadas: ' + str(mp.size(catalog['Categories'])))
         print('Asociación de Categorías a Videos cargados: ' +
               str(lt.size(catalog['Videos'])))
         print("El primer video cargado fue: ")
         print_first_element(catalog['Videos'])
         print('Las categorias cargadas fueron:')
-        print_categories(catalog['Categories'])      
+        #print_categories(catalog['Categories'])     
+        print("MEMORIA : " + str(answer[1])+ " kbs")
+        print("TIEMPO : " + str(answer[0]) + " ms") 
         
     elif int(inputs[0]) == 2:
         num_countries = int(input("Escriba en numeros la cantidad de videos que desea consultar: "))
