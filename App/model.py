@@ -53,12 +53,21 @@ def newCatalog(tipo: str, factor:float):
     """
     catalog = {'Videos': None,
                'Categories': None,
+               'Videos_Category':None,
+               'Countries':None
                }
 
     catalog['Videos'] = lt.newList(tipo, cmpfunction = compareVideos)
-    catalog['Categories'] = mp.newMap(10000,
+    catalog['Categories'] = mp.newMap(35,
                                       maptype=tipo,
-                                      loadfactor=factor
+                                      loadfactor=factor)
+    catalog['Videos_Category'] = mp.newMap(35,
+                                      maptype=tipo,
+                                      loadfactor=factor                                  
+                                      )
+    catalog['Countries'] = mp.newMap(240,
+                                      maptype=tipo,
+                                      loadfactor=factor                                  
                                       )
     return catalog
 
@@ -74,8 +83,12 @@ def addCategory(catalog, category):
 def addVideo(catalog, video,typ):
     # Se adiciona el video a la lista de videos y se le agrega su categoria correspondiente
     categories = catalog['Categories']
+    videos_by_categories = catalog['Videos_Category']
+    videos_by_countries = catalog['Countries']
     category = addVideoCategory(video['category_id'],categories)
     video['category'] = category
+    addVideoByCategory(videos_by_categories,video)
+    addVideoByCountry(videos_by_countries,video)
     lt.addLast(catalog['Videos'],video)
 
 def addVideoCategory(category_id, categories):
@@ -83,10 +96,53 @@ def addVideoCategory(category_id, categories):
     Cambia la categoria del libro con la correspondiente
     """
     new_category = mp.get(categories,category_id)
+    new_category = new_category['value']
     return new_category
 
+def addVideoByCategory(categories,video):
+    vid_category = video['category']
+    existcategory = mp.contains(categories, vid_category)
+    if existcategory:
+        entry = mp.get(categories, vid_category)
+        category = me.getValue(entry)
+    else:
+        category = newCategory(vid_category)
+        mp.put(categories, vid_category, category)
+    lt.addLast(category['Videos'], video)
+
+def addVideoByCountry(countries,video):
+    vid_country = video['country']
+    existcountry = mp.contains(countries, vid_country)
+    if existcountry:
+        entry = mp.get(countries, vid_country)
+        country = me.getValue(entry)
+    else:
+        country = newCountry(vid_country)
+        mp.put(countries, vid_country, country)
+    lt.addLast(country['Videos'], video)
+
 # Funciones para creacion de datos
-    
+
+def newCategory(vid_category):
+    """
+    Esta funcion crea la estructura de libros asociados
+    a un año.
+    """
+    entry = {'category': "", "Videos": None}
+    entry['category'] = vid_category
+    entry['Videos'] = lt.newList('SINGLE_LINKED', compareCategories)
+    return entry
+
+def newCountry(vid_country):
+    """
+    Esta funcion crea la estructura de libros asociados
+    a un año.
+    """
+    entry = {'country': "", "Videos": None}
+    entry['country'] = vid_country
+    entry['Videos'] = lt.newList('SINGLE_LINKED', compareCountries)
+    return entry
+
 # Funciones de consulta
 
 def look_for_country(videos,country):
@@ -174,15 +230,13 @@ def compareCountries(country1, country2):
 def cmpByLikes(Video1,Video2):
     return float(Video1['likes']) < float(Video2['likes'])
 
-def compareCategories(id, entrada):
-    categoryentry = me.getKey(entrada)
-    if (int(id) == int(categoryentry)):
+def compareCategories(cat1, cat2):
+    if cat1 == cat:
         return 0
-    elif (int(id) > int(categoryentry)):
+    elif cat1 > cat2:
         return 1
     else:
-        return 0
-    
+        return -1
 
 # Funciones de ordenamiento
 
