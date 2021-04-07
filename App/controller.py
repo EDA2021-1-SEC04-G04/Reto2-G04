@@ -32,21 +32,21 @@ El controlador se encarga de mediar entre la vista y el modelo.
 
 # Inicialización del Catálogo de videos
 
-def initCatalog(tipo: int):
+def initCatalog(tipo: int, factor:float):
     list_type = def_type_list(tipo)
     """
     Llama la funcion de inicializacion del catalogo del modelo.
     """
-    catalog = model.newCatalog(list_type)
+    catalog = model.newCatalog(list_type,factor)
     return catalog
 
 # Funciones para la carga de datos
 
 def def_type_list(typ:int):
     if typ == 1:
-        x = "ARRAY_LIST"
+        x = "CHAINING"
     else:
-        x = "LINKED_LIST"
+        x = "PROBING"
     return x
 
 def loadData(catalog,typ):
@@ -60,7 +60,6 @@ def loadData(catalog,typ):
 
     tracemalloc.start()
     start_time = getTime()
-    print(start_time)
     start_memory = getMemory()
 
     list_type = def_type_list(typ)

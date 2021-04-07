@@ -44,7 +44,7 @@ los mismos.
 
 # Construccion de modelos
 
-def newCatalog(tipo: str):
+def newCatalog(tipo: str, factor:float):
     """
     Inicializa el catálogo de videos. Crea una lista vacia para guardar
     todos los videos, adicionalmente, crea una lista vacia para los paises,
@@ -57,8 +57,8 @@ def newCatalog(tipo: str):
 
     catalog['Videos'] = lt.newList(tipo, cmpfunction = compareVideos)
     catalog['Categories'] = mp.newMap(10000,
-                                      maptype="CHAINING",
-                                      loadfactor=2.0
+                                      maptype=tipo,
+                                      loadfactor=factor
                                       )
     return catalog
 

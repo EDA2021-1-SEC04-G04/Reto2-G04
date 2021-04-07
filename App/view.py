@@ -54,7 +54,8 @@ def loadData(catalog,tipo):
     """
     Carga los videos en la estructura de datos
     """
-    controller.loadData(catalog,tipo)
+    carga_tiempo = controller.loadData(catalog,tipo)
+    return carga_tiempo
 
 #Funciones de requerimiento
 
@@ -218,24 +219,21 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        tipo = int(input("Ingrese 1 si desea un arreglo o cualquier otro caracter para una lista encadenada: "))
+        tipo = int(input("Ingrese 1 si desea manejar las colisiones con el método chaining o 2 para linear probing: "))
+        load_factor = float(input("Ingrese el factor de carga con el que desea trabajar: "))
         #cambio medida tiempo y memoria
-        catalog = controller.initCatalog(tipo)
+        catalog = controller.initCatalog(tipo,load_factor)
         answer = loadData(catalog,tipo)
-
-        #print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
-        #      "Memoria [kB]: ", f"{answer[1]:.3f}")
         print('Videos cargados: ' + str(lt.size(catalog['Videos'])))
         print('Categorias cargadas: ' + str(mp.size(catalog['Categories'])))
         print('Asociación de Categorías a Videos cargados: ' +
               str(lt.size(catalog['Videos'])))
         print("El primer video cargado fue: ")
         print_first_element(catalog['Videos'])
-        print('Las categorias cargadas fueron:')
+        #print('Las categorias cargadas fueron:')
         #print_categories(catalog['Categories'])     
-        #print("MEMORIA : " + str(answer[1])+ " kbs")
-        #print("TIEMPO : " + str(answer[0]) + " ms")
-        print(answer) 
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
         
     elif int(inputs[0]) == 2:
         num_countries = int(input("Escriba en numeros la cantidad de videos que desea consultar: "))
