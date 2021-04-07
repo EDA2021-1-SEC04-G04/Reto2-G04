@@ -27,6 +27,7 @@ import time
 from DISClib.ADT import list as lt
 from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
 assert cf
 
 default_limit = 1000
@@ -65,9 +66,15 @@ def views_country_category(catalog,country,num_countries,category,sort):
     con más views en un país con una categoría dada. Imprime el 
     número de videos pedido por el usuario.
     """
-    countries = controller.look_for_country(catalog,country)
-    categories = controller.look_for_category(countries,category)
-    size = lt.size(categories)
+    category = category.title()
+    tamano = mp.size(catalog['Videos_Category'])
+    keys = mp.keySet(catalog['Videos_Category'])
+    categories = mp.get(catalog['Videos_Category'],category)
+    print(tamano,keys)
+    list_categories = me.getValue(categories)
+    countries = controller.look_for_country(list_categories,country)
+    #categories = controller.look_for_category(countries,category)
+    size = lt.size(countries)
     lista_videos = controller.videos_by_views(categories,sort,size)
     printVideosMostViews(lista_videos,country,num_countries,category)
     
@@ -242,7 +249,7 @@ while True:
         #print("\nSeleccione el tipo de ordenamiento:\n-1 para insertion\n-2 para selection\n-3 para shellshort\n-4 para quickshort\n-5 para mergeshort")
         #sort = int(input("Ingrese su eleccion: "))
         sort = 5
-        views_country_category(catalog['Videos'],country,num_countries,category,sort)
+        views_country_category(catalog,country,num_countries,category,sort)
 
     elif int(inputs[0]) == 3:
         country = input("Ingrese el pais en el que desea buscar: ")
