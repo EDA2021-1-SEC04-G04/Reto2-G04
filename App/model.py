@@ -165,11 +165,11 @@ def look_for_category(videos,category):
     y retorna una lista con todos ellos
     """
     pos = 0
-    category = " " + category
+    category = category
     categories = lt.newList('ARRAY_LIST')
     while pos < lt.size(videos):
         video = lt.getElement(videos,pos)
-        if video['category'].lower() == category:
+        if video['category'].lower() == category.lower():
             lt.addLast(categories,video)
         pos +=1
     return categories

@@ -73,7 +73,7 @@ def views_country_category(catalog,country,num_countries,category,sort):
     print(tamano,keys)
     list_categories = me.getValue(categories)
     countries = controller.look_for_country(list_categories,country)
-    #categories = controller.look_for_category(countries,category)
+    categories = controller.look_for_category(countries,category)
     size = lt.size(countries)
     lista_videos = controller.videos_by_views(categories,sort,size)
     printVideosMostViews(lista_videos,country,num_countries,category)

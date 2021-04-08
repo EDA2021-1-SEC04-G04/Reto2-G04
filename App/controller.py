@@ -65,7 +65,6 @@ def loadData(catalog,typ):
     list_type = def_type_list(typ)
     loadCategories(catalog)
     loadVideos(catalog,list_type)
-    print(catalog['Videos_Category'])
 
     stop_memory = getMemory()
     stop_time = getTime()
