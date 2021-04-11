@@ -66,16 +66,13 @@ def views_country_category(catalog,country,num_countries,category,sort):
     con más views en un país con una categoría dada. Imprime el 
     número de videos pedido por el usuario.
     """
-    category = category.title()
-    tamano = mp.size(catalog['Videos_Category'])
-    keys = mp.keySet(catalog['Videos_Category'])
+    category = " " + category.title()
     categories = mp.get(catalog['Videos_Category'],category)
-    print(tamano,keys)
-    list_categories = me.getValue(categories)
+    list_categories = me.getValue(categories)['Videos']
     countries = controller.look_for_country(list_categories,country)
-    categories = controller.look_for_category(countries,category)
+    #categories = controller.look_for_category(countries,category)
     size = lt.size(countries)
-    lista_videos = controller.videos_by_views(categories,sort,size)
+    lista_videos = controller.videos_by_views(countries,sort,size)
     printVideosMostViews(lista_videos,country,num_countries,category)
     
 def trending_country(catalog, country):
@@ -83,8 +80,10 @@ def trending_country(catalog, country):
     Cumple el requerimiento número 2 del reto buscando el video
     con más tiempo trending en un país. Imprime este mismo.
     """
-    countries = controller.look_for_country(catalog,country)
-    most_trending = controller.look_for_most_trending(countries)
+    #country = country.title()
+    countries = mp.get(catalog['Countries'],country)
+    list_countries = me.getValue(countries)['Videos']
+    most_trending = controller.look_for_most_trending(list_countries)
     print_most_trending_categories(most_trending, country)
 
 def trending_category(catalog, category):
@@ -253,17 +252,17 @@ while True:
 
     elif int(inputs[0]) == 3:
         country = input("Ingrese el pais en el que desea buscar: ")
-        trending_country(catalog['Videos'],country)
+        trending_country(catalog,country)
 
     elif int(inputs[0]) == 4:
         category = input("Ingrese la categoria en la que desea buscar: ")
-        trending_category(catalog['Videos'],category)
+        trending_category(catalog,category)
 
     elif int(inputs[0]) == 5:
         num_videos = int(input("Escriba en numeros la cantidad de videos que desea consultar: "))
         country = input("Ingrese el pais en el que desea buscar: ")
         tag = input("Ingrese el tag que desea buscar: ")
-        likes_country_tag(num_videos,country,tag,catalog['Videos'])
+        likes_country_tag(num_videos,country,tag,catalog)
 
     else:
         sys.exit(0)
