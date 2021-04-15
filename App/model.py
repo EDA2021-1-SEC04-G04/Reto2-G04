@@ -89,6 +89,7 @@ def addVideo(catalog, video,typ):
     video['category'] = category
     addVideoByCategory(videos_by_categories,video)
     addVideoByCountry(videos_by_countries,video)
+    video["tags"] = addtags(video)
     lt.addLast(catalog['Videos'],video)
 
 def addVideoCategory(category_id, categories):
@@ -144,6 +145,12 @@ def newCountry(vid_country):
     return entry
 
 # Funciones de consulta
+def addtags(video):
+    tags = video["tags"].split("|")
+    mapatags = mp.newMap(len(tags),maptype="CHAINING",loadfactor=3.0)
+    for i in tags:
+        mp.put(mapatags, i, True)
+    return mapatags
 
 def look_for_country(videos,country):
     """
@@ -165,11 +172,11 @@ def look_for_category(videos,category):
     y retorna una lista con todos ellos
     """
     pos = 0
-    category = category
+    category = category.lower()
     categories = lt.newList('ARRAY_LIST')
     while pos < lt.size(videos):
         video = lt.getElement(videos,pos)
-        if video['category'].lower() == category.lower():
+        if video['category'].lower() == (" " + category):
             lt.addLast(categories,video)
         pos +=1
     return categories
@@ -200,10 +207,10 @@ def look_for_tags(countries,tag):
     vid_tags = lt.newList('ARRAY_LIST')
     while pos < lt.size(countries):
         video = lt.getElement(countries,pos)
-        tags = video['tags'].split("|")
-        if tag in tags:
+        if mp.contains(video["tags"],tag):
             lt.addLast(vid_tags,video)
         pos +=1
+    
     return vid_tags
 
 # Funciones utilizadas para comparar elementos dentro de una lista

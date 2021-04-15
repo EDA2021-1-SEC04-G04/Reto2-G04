@@ -91,7 +91,7 @@ def trending_category(catalog, category):
     Cumple el requerimiento número 3 del reto buscando el video
     con más tiempo trending en una categoría. Imprime este mismo.
     """
-    categories = controller.look_for_category(catalog,category)
+    categories = controller.look_for_category(catalog['Videos'],category)
     most_trending = controller.look_for_most_trending(categories)
     print_most_trending_categories(most_trending, category)
 
@@ -262,7 +262,7 @@ while True:
         num_videos = int(input("Escriba en numeros la cantidad de videos que desea consultar: "))
         country = input("Ingrese el pais en el que desea buscar: ")
         tag = input("Ingrese el tag que desea buscar: ")
-        likes_country_tag(num_videos,country,tag,catalog)
+        likes_country_tag(num_videos,country,tag,catalog["Videos"])
 
     else:
         sys.exit(0)
