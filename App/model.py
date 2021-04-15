@@ -161,7 +161,7 @@ def look_for_country(videos,country):
     countries = lt.newList('ARRAY_LIST')
     while pos < lt.size(videos):
         video = lt.getElement(videos,pos)
-        if video['country'].lower() == country:
+        if video['country'].lower() == country.lower():
             lt.addLast(countries,video)
         pos +=1
     return countries
@@ -206,9 +206,11 @@ def look_for_tags(countries,tag):
     tag = '"' + tag + '"'
     vid_tags = lt.newList('ARRAY_LIST')
     while pos < lt.size(countries):
+        
         video = lt.getElement(countries,pos)
         if mp.contains(video["tags"],tag):
             lt.addLast(vid_tags,video)
+            print(1)
         pos +=1
     
     return vid_tags

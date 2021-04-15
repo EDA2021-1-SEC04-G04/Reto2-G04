@@ -207,7 +207,7 @@ def print_video_tags(tags_by_likes,num_videos,country,tag):
         i = 0
         while i < num_videos and i < size :
             video = lt.getElement(tags_by_likes,i)
-            tags= video['tags']
+            tags= "".join(mp.keySet(video['tags']))
             title = video['title']
             ch_title = video['channel_title']
             pub_time = video['publish_time']
