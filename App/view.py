@@ -29,6 +29,7 @@ from DISClib.ADT import queue as qu
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 assert cf
+import tracemalloc
 
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
@@ -66,6 +67,13 @@ def views_country_category(catalog,country,num_countries,category,sort):
     con más views en un país con una categoría dada. Imprime el 
     número de videos pedido por el usuario.
     """
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
     category = " " + category.title()
     categories = mp.get(catalog['Videos_Category'],category)
     list_categories = me.getValue(categories)['Videos']
@@ -74,26 +82,64 @@ def views_country_category(catalog,country,num_countries,category,sort):
     size = lt.size(countries)
     lista_videos = controller.videos_by_views(countries,sort,size)
     printVideosMostViews(lista_videos,country,num_countries,category)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return delta_time,delta_memory
     
 def trending_country(catalog, country):
     """
     Cumple el requerimiento número 2 del reto buscando el video
     con más tiempo trending en un país. Imprime este mismo.
     """
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
     #country = country.title()
     countries = mp.get(catalog['Countries'],country)
     list_countries = me.getValue(countries)['Videos']
     most_trending = controller.look_for_most_trending(list_countries)
     print_most_trending_categories(most_trending, country)
 
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return delta_time,delta_memory
+
 def trending_category(catalog, category):
     """
     Cumple el requerimiento número 3 del reto buscando el video
     con más tiempo trending en una categoría. Imprime este mismo.
     """
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
     categories = controller.look_for_category(catalog['Videos'],category)
     most_trending = controller.look_for_most_trending(categories)
     print_most_trending_categories(most_trending, category)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return delta_time,delta_memory
 
 def likes_country_tag(num_videos,country,tag,catalog_videos):
     """
@@ -101,10 +147,25 @@ def likes_country_tag(num_videos,country,tag,catalog_videos):
     con más likes en un país con un tag específico. Imprime el 
     número de videos pedido por el usuario.
     """
+    delta_time = -1.0
+    delta_memory = -1.0
+
+    tracemalloc.start()
+    start_time = getTime()
+    start_memory = getMemory()
+
     countries = controller.look_for_country(catalog_videos,country)
     tags = controller.look_for_tags(countries,tag)
     tags_by_likes = controller.videos_by_likes(tags)
     print_video_tags(tags_by_likes,num_videos,country,tag)
+
+    stop_memory = getMemory()
+    stop_time = getTime()
+    tracemalloc.stop()
+
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return delta_time,delta_memory
 
 #Funciones de impresion
 
@@ -217,6 +278,34 @@ def print_video_tags(tags_by_likes,num_videos,country,tag):
             info_video = "{0:^100}{1:^25}{2:^25}{3:^15}{4:^10}{5:^10}{6:100}".format(title, ch_title, pub_time, views, likes, dislikes, tags)
             print(info_video)
             i+=1
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+def getMemory():
+    """
+    toma una muestra de la memoria alocada en instante de tiempo
+    """
+    return tracemalloc.take_snapshot()
+
+def deltaMemory(start_memory, stop_memory):
+    """
+    calcula la diferencia en memoria alocada del programa entre dos
+    instantes de tiempo y devuelve el resultado en bytes (ej.: 2100.0 B)
+    """
+    memory_diff = stop_memory.compare_to(start_memory, "filename")
+    delta_memory = 0.0
+
+    # suma de las diferencias en uso de memoria
+    for stat in memory_diff:
+        delta_memory = delta_memory + stat.size_diff
+    # de Byte -> kByte
+    delta_memory = delta_memory/1024.0
+    return delta_memory
+
 """
 Menu principal
 """
@@ -248,21 +337,29 @@ while True:
         #print("\nSeleccione el tipo de ordenamiento:\n-1 para insertion\n-2 para selection\n-3 para shellshort\n-4 para quickshort\n-5 para mergeshort")
         #sort = int(input("Ingrese su eleccion: "))
         sort = 5
-        views_country_category(catalog,country,num_countries,category,sort)
+        answer = views_country_category(catalog,country,num_countries,category,sort)
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
 
     elif int(inputs[0]) == 3:
         country = input("Ingrese el pais en el que desea buscar: ")
-        trending_country(catalog,country)
+        answer= trending_country(catalog,country)
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
 
     elif int(inputs[0]) == 4:
         category = input("Ingrese la categoria en la que desea buscar: ")
-        trending_category(catalog,category)
+        answer= trending_category(catalog,category)
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
 
     elif int(inputs[0]) == 5:
         num_videos = int(input("Escriba en numeros la cantidad de videos que desea consultar: "))
         country = input("Ingrese el pais en el que desea buscar: ")
         tag = input("Ingrese el tag que desea buscar: ")
-        likes_country_tag(num_videos,country,tag,catalog["Videos"])
+        answer= likes_country_tag(num_videos,country,tag,catalog["Videos"])
+        print("Tiempo [ms]: ", f"{answer[0]:.3f}", "  ||  ",
+              "Memoria [kB]: ", f"{answer[1]:.3f}")
 
     else:
         sys.exit(0)
